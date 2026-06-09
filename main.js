@@ -1,141 +1,115 @@
 console.log("Welcome to Odin's Rock Paper Scissors Game!");
 
-//gets a computer choice
-function getComputerChoice() {
-  let number = Math.floor(Math.random() * 10);
-  option_number = Math.floor(number / 4);
+// maximum score needed to declare a winner
+const MAX_SCORE = 5;
 
-  if (option_number == 0) {
-    return "rock";
-  } else if (option_number == 1) {
-    return "paper";
-  } else {
-    return "scissors";
-  }
-}
+// track scores for human and computer
+let human_score = 0;
+let computer_score = 0;
 
-//get the human choice
-function getHumanChoice() {
-  choice = choice.toLowerCase().trim();
-  return choice;
-}
-
-//initial scores before playing
-
-human_score = 0;
-computer_score = 0;
-
-//function to determine the winner for each play round
+// UI elements
 const resultList = document.querySelector("ul");
-const li = document.createElement("li");
-const span = document.createElement("li");
-const score = document.createElement("li");
-const winner = document.createElement("li");
+const choicesDiv = document.querySelector("div");
 
+// create buttons for the player choices
+const rockButton = document.createElement("button");
+rockButton.textContent = "rock";
+const paperButton = document.createElement("button");
+paperButton.textContent = "paper";
+const scissorsButton = document.createElement("button");
+scissorsButton.textContent = "scissors";
+
+choicesDiv.append(rockButton, paperButton, scissorsButton);
+
+// get a random computer choice
+function getComputerChoice() {
+  const number = Math.floor(Math.random() * 3);
+  if (number === 0) {
+    return "rock";
+  } else if (number === 1) {
+    return "paper";
+  }
+  return "scissors";
+}
+
+// normalize and return the human choice
+function getHumanChoice(choice) {
+  return choice.toLowerCase().trim();
+}
+
+// add a new line to the result list
+function appendRoundMessage(message) {
+  const item = document.createElement("li");
+  item.textContent = message;
+  resultList.appendChild(item);
+}
+
+// disable the choice buttons when the game is over
+function endGame() {
+  rockButton.disabled = true;
+  paperButton.disabled = true;
+  scissorsButton.disabled = true;
+}
+
+// determine the winner of the round and update score
 function playround(human_choice, computer_choice) {
-  //logic to determine winner
-  span.textContent = `YOU = ${human_choice} :  OPPONENT = ${computer_choice}`;
-  resultList.appendChild(span);
-  switch (human_choice) {
-    case "rock":
-      if (computer_choice === "rock") {
-        li.textContent = "Tie Game";
-        resultList.appendChild(li);
-      } else if (computer_choice === "scissors") {
-        human_score += 1;
-        li.textContent = "rock beats scissors";
-        resultList.appendChild(li);
-      } else {
-        computer_score += 1;
-        li.textContent = "paper beats rock";
-        resultList.appendChild(li);
-      }
-      break;
-
-    case "paper":
-      if (computer_choice === "paper") {
-        li.textContent = "Tie Game";
-        resultList.appendChild(li);
-      } else if (computer_choice === "scissors") {
-        computer_score += 1;
-        li.textContent = "scissors beat paper";
-        resultList.appendChild(li);
-      } else {
-        human_score += 1;
-        li.textContent = "paper beats rock";
-        resultList.appendChild(li);
-      }
-      break;
-
-    case "scissors":
-      if (computer_choice === "scissors") {
-        li.textContent = "Tie Game";
-        resultList.appendChild(li);
-      } else if (computer_choice === "rock") {
-        computer_score += 1;
-        li.textContent = "rock beats scissors";
-        resultList.appendChild(li);
-      } else {
-        human_score += 1;
-        li.textContent = "scissors beats paper";
-        resultList.appendChild(li);
-      }
-      break;
-    default:
-      console.log("Invalid choice");
+  if (human_score === MAX_SCORE || computer_score === MAX_SCORE) {
+    return; // game already finished, ignore further rounds
   }
 
-  score.textContent = `YOU: ${human_score} : OPPONENT : ${computer_score}`;
-  resultList.appendChild(score);
+  const normalizedHuman = getHumanChoice(human_choice);
+  appendRoundMessage(
+    `YOU = ${normalizedHuman} : OPPONENT = ${computer_choice}`,
+  );
 
-  if (human_score === 5) {
-    winner.textContent = "You win";
-    resultList.appendChild(winner);
-  } else if (computer_score == 5) {
-    winner.textContent = "opponent wins ";
-    resultList.append(winner);
+  if (normalizedHuman === computer_choice) {
+    appendRoundMessage("Tie game");
+  } else if (
+    (normalizedHuman === "rock" && computer_choice === "scissors") ||
+    (normalizedHuman === "paper" && computer_choice === "rock") ||
+    (normalizedHuman === "scissors" && computer_choice === "paper")
+  ) {
+    human_score += 1;
+    appendRoundMessage(`${normalizedHuman} beats ${computer_choice}`);
+  } else {
+    computer_score += 1;
+    appendRoundMessage(`${computer_choice} beats ${normalizedHuman}`);
+  }
+
+  appendRoundMessage(
+    `SCORE -> YOU: ${human_score} | OPPONENT: ${computer_score}`,
+  );
+
+  if (human_score === MAX_SCORE) {
+    appendRoundMessage("Game over: You win!");
+    appendRoundMessage(getwinner());
+    endGame();
+  } else if (computer_score === MAX_SCORE) {
+    appendRoundMessage("Game over: Opponent wins!");
+    appendRoundMessage(getwinner());
+    endGame();
   }
 }
 
-//determining the winner
+// returns the final winner after the game ends
 function getwinner() {
   if (computer_score > human_score) {
     return "The winner is Computer";
   } else if (human_score > computer_score) {
     return "The winner is Human";
-  } else {
-    return "tied game";
   }
+  return "The game is tied";
 }
 
-//adding ui
-const rock = document.createElement("button");
-rock.textContent = "rock";
-const paper = document.createElement("button");
-paper.textContent = "paper";
-const scissors = document.createElement("button");
-scissors.textContent = "scissors";
-
-rock.addEventListener("click", () => {
-  human_choice = "rock";
-  computer_choice = getComputerChoice();
-
-  playround(human_choice, computer_choice);
+// attach event listeners to each button
+rockButton.addEventListener("click", () => {
+  playround("rock", getComputerChoice());
 });
 
-paper.addEventListener("click", () => {
-  human_choice = "paper";
-  computer_choice = getComputerChoice();
-
-  playround(human_choice, computer_choice);
+paperButton.addEventListener("click", () => {
+  playround("paper", getComputerChoice());
 });
 
-scissors.addEventListener("click", () => {
-  human_choice = "scissors";
-  computer_choice = getComputerChoice();
-
-  playround(human_choice, computer_choice);
+scissorsButton.addEventListener("click", () => {
+  playround("scissors", getComputerChoice());
 });
-
-const div = document.querySelector("div");
-div.append(rock, paper, scissors);
