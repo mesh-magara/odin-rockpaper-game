@@ -16,9 +16,7 @@ function getComputerChoice() {
 
 //get the human choice
 function getHumanChoice() {
-  let choice = window.prompt("enter you choice rock , paper or scissors");
   choice = choice.toLowerCase().trim();
-
   return choice;
 }
 
@@ -28,68 +26,76 @@ human_score = 0;
 computer_score = 0;
 
 //function to determine the winner for each play round
+const resultList = document.querySelector("ul");
+const li = document.createElement("li");
+const span = document.createElement("li");
+const score = document.createElement("li");
+const winner = document.createElement("li");
 
 function playround(human_choice, computer_choice) {
-  console.log(
-    `computer-choice = ${computer_choice} human-choice = ${human_choice}`,
-  );
   //logic to determine winner
+  span.textContent = `YOU = ${human_choice} :  OPPONENT = ${computer_choice}`;
+  resultList.appendChild(span);
   switch (human_choice) {
     case "rock":
       if (computer_choice === "rock") {
-        console.log("tie game");
+        li.textContent = "Tie Game";
+        resultList.appendChild(li);
       } else if (computer_choice === "scissors") {
         human_score += 1;
-        console.log("rock beats scissors");
+        li.textContent = "rock beats scissors";
+        resultList.appendChild(li);
       } else {
         computer_score += 1;
-        console.log("paper beats rock");
+        li.textContent = "paper beats rock";
+        resultList.appendChild(li);
       }
       break;
 
     case "paper":
       if (computer_choice === "paper") {
-        console.log("tie game");
+        li.textContent = "Tie Game";
+        resultList.appendChild(li);
       } else if (computer_choice === "scissors") {
         computer_score += 1;
-        console.log("scissors beats paper");
+        li.textContent = "scissors beat paper";
+        resultList.appendChild(li);
       } else {
         human_score += 1;
-        console.log("paper beats rock");
+        li.textContent = "paper beats rock";
+        resultList.appendChild(li);
       }
       break;
 
     case "scissors":
       if (computer_choice === "scissors") {
-        console.log("tie game");
+        li.textContent = "Tie Game";
+        resultList.appendChild(li);
       } else if (computer_choice === "rock") {
         computer_score += 1;
-        console.log("rock beats scissors");
+        li.textContent = "rock beats scissors";
+        resultList.appendChild(li);
       } else {
         human_score += 1;
-        console.log("scissors beats paper");
+        li.textContent = "scissors beats paper";
+        resultList.appendChild(li);
       }
       break;
     default:
       console.log("Invalid choice");
   }
-}
 
-//function to play rounds(each play round)
-function playgame() {
-  let i = 0;
-  while (i < 5) {
-    computer_choice = getComputerChoice();
-    human_choice = getHumanChoice();
-    playround(human_choice, computer_choice);
-    ++i;
+  score.textContent = `YOU: ${human_score} : OPPONENT : ${computer_score}`;
+  resultList.appendChild(score);
+
+  if (human_score === 5) {
+    winner.textContent = "You win";
+    resultList.appendChild(winner);
+  } else if (computer_score == 5) {
+    winner.textContent = "opponent wins ";
+    resultList.append(winner);
   }
 }
-
-plays = playgame();
-console.log(
-  `computer_Score : ${computer_score} and  human_score : ${human_score}`,
-);
 
 //determining the winner
 function getwinner() {
@@ -102,5 +108,34 @@ function getwinner() {
   }
 }
 
-winner = getwinner();
-console.log(winner);
+//adding ui
+const rock = document.createElement("button");
+rock.textContent = "rock";
+const paper = document.createElement("button");
+paper.textContent = "paper";
+const scissors = document.createElement("button");
+scissors.textContent = "scissors";
+
+rock.addEventListener("click", () => {
+  human_choice = "rock";
+  computer_choice = getComputerChoice();
+
+  playround(human_choice, computer_choice);
+});
+
+paper.addEventListener("click", () => {
+  human_choice = "paper";
+  computer_choice = getComputerChoice();
+
+  playround(human_choice, computer_choice);
+});
+
+scissors.addEventListener("click", () => {
+  human_choice = "scissors";
+  computer_choice = getComputerChoice();
+
+  playround(human_choice, computer_choice);
+});
+
+const div = document.querySelector("div");
+div.append(rock, paper, scissors);
