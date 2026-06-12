@@ -1,0 +1,30 @@
+body {
+  background-color: black;
+  display: flex;
+  justify-content: center;
+}
+.main-container {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+button {
+  color: aqua;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin-left: 13px;
+  background-color: black;
+}
+.output > div {
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem;
+  text-align: start;
+  font-weight: bolder;
+  background: #252424;
+}
+
